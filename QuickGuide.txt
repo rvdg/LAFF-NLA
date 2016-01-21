@@ -1,0 +1,36 @@
+Add a file (After you modify/add the files in that directory, execute the following 4 commands in order.)
+$ git pull
+$ git add FILE_LIST/DIRECTORY
+$ git commit
+$ git push
+
+Detailed explanation:
+# Every time we submit something, first pull from the repository, in case other collaborators have already submitted something there.
+$ git pull origin master
+# Add the files we want; if you add the whole directory, then all files in that directory will be added
+$ git add FILE_LIST/DIRECTORY
+# Commit; Edit the commit message with emacs/vim
+$ git commit
+# Push it to remote repository
+$ git push -u origin master
+
+Remove a file
+$ git rm FILE
+$ git commit 
+$ git push
+
+Remove the file in remote repository (Github), but keep it local
+$ git rm --cached FILE
+$ git commit
+$ git push
+
+How to create a repository:
+Create the repository in Github website,  and copy the url of that repository
+$ git init
+$ git remote add origin URL_FROM_GITHUB_REPOSITORY
+
+LAFF-NLA directory on Github website:
+https://github.com/rvdg/LAFF-NLA 
+
+One useful cheating sheet (2-page):
+https://training.github.com/kit/downloads/github-git-cheat-sheet.pdf
