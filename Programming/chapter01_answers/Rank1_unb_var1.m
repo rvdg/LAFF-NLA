@@ -1,4 +1,4 @@
-function [ y_out ] = Mvmult_unb_var1( A, x, y )
+function [ A_out ] = Rank1_unb_var1( A, y, x )
 
   [ AL, AR ] = FLA_Part_1x2( A, ...
                                0, 'FLA_LEFT' );
@@ -20,9 +20,9 @@ function [ y_out ] = Mvmult_unb_var1( A, x, y )
 
     %------------------------------------------------------------%
 
-    % y = chi1 * a1 + y;
-    y = laff_axpy( chi1, a1, y );
-    
+    % a1 = chi1 * y + a1;
+    a1 = laff_axpy( chi1, y, a1 );
+
     %------------------------------------------------------------%
 
     [ AL, AR ] = FLA_Cont_with_1x3_to_1x2( A0, a1, A2, ...
@@ -36,7 +36,6 @@ function [ y_out ] = Mvmult_unb_var1( A, x, y )
 
   end
 
-  y_out = y;
-
+  A_out = [ AL, AR ];
 
 return

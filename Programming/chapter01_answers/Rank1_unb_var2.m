@@ -1,4 +1,4 @@
-function [ y_out ] = Mvmult_unb_var2( A, x, y )
+function [ A_out ] = Rank1_unb_var2( A, y, x )
 
   [ AT, ...
     AB ] = FLA_Part_2x1( A, ...
@@ -24,9 +24,9 @@ function [ y_out ] = Mvmult_unb_var2( A, x, y )
 
     %------------------------------------------------------------%
 
-    % psi1 = a1t * x + psi1;
-    psi1 = laff_dots( a1t, x, psi1 );
-
+    % a1t = psi1 * x' + a1t;
+    a1t = laff_axpy( psi1, x, a1t );
+    
     %------------------------------------------------------------%
 
     [ AT, ...
@@ -43,7 +43,8 @@ function [ y_out ] = Mvmult_unb_var2( A, x, y )
 
   end
 
-  y_out = [ yT
-            yB ];
+  A_out = [ AT
+            AB ];
 
 return
+
