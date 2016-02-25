@@ -11,6 +11,9 @@
 BLISlab: A Sandbox for Optimizing GEMM
 
 .
+├── examples
+│   ├── axpy.c
+│   └── compile.sh
 ├── README
 ├── results
 │   ├── bl_dgemm_plot.m
@@ -24,7 +27,7 @@ BLISlab: A Sandbox for Optimizing GEMM
 │   ├── dgemm
 │   │   ├── bl_dgemm_ref.c
 │   │   ├── bl_dgemm_util.c
-│   │   └── my_dgemm.c
+│   │   ├── my_dgemm.c
 │   ├── include
 │   │   ├── bl_config.h
 │   │   ├── bl_dgemm.h
@@ -44,32 +47,56 @@ BLISlab: A Sandbox for Optimizing GEMM
 │       ├── test_bl_dgemm.c
 │       └── test_bl_dgemm.x
 ├── step2
-    ├── dgemm
-    │   ├── bl_dgemm_ref.c
-    │   ├── bl_dgemm_util.c
-    │   └── my_dgemm.c
-    ├── include
-    │   ├── bl_config.h
-    │   ├── bl_dgemm.h
-    │   ├── bl_dgemm_kernel.h
-    │   └── bl_dgemm_ref.h
-    ├── kernels
-    │   ├── bl_dgemm_ukr.c
-    │   └── bli_dgemm_ukr.o
-    ├── lib
-    ├── makefile
-    ├── make.inc.files
-    │   ├── make.gnu.inc
-    │   ├── make.inc
-    │   └── make.intel.inc
-    ├── README
-    ├── sourceme.sh
-    └── test
-        ├── makefile
-        ├── run_bl_dgemm.sh
-        ├── tacc_run_bl_dgemm.sh
-        ├── test_bl_dgemm.c
-        └── test_bl_dgemm.x
+│   ├── dgemm
+│   │   ├── bl_dgemm_ref.c
+│   │   ├── bl_dgemm_util.c
+│   │   └── my_dgemm.c
+│   ├── include
+│   │   ├── bl_config.h
+│   │   ├── bl_dgemm.h
+│   │   └── bl_dgemm_ref.h
+│   ├── lib
+│   ├── makefile
+│   ├── make.inc.files
+│   │   ├── make.gnu.inc
+│   │   ├── make.inc
+│   │   └── make.intel.inc
+│   ├── README
+│   ├── sourceme.sh
+│   └── test
+│       ├── makefile
+│       ├── run_bl_dgemm_rankk.sh
+│       ├── run_bl_dgemm.sh
+│       ├── tacc_run_bl_dgemm.sh
+│       └── test_bl_dgemm.c
+└── step3
+    ├── dgemm
+    │   ├── bl_dgemm_ref.c
+    │   ├── bl_dgemm_util.c
+    │   └── my_dgemm.c
+    ├── include
+    │   ├── avx_types.h
+    │   ├── bl_config.h
+    │   ├── bl_dgemm.h
+    │   ├── bl_dgemm_kernel.h
+    │   └── bl_dgemm_ref.h
+    ├── kernels
+    │   ├── bl_dgemm_asm_kernel.c
+    │   ├── bl_dgemm_int_kernel.c
+    │   └── bl_dgemm_ukr.c
+    ├── lib
+    ├── makefile
+    ├── make.inc.files
+    │   ├── make.gnu.inc
+    │   ├── make.inc
+    │   └── make.intel.inc
+    ├── README
+    ├── sourceme.sh
+    └── test
+        ├── makefile
+        ├── run_bl_dgemm.sh
+        ├── tacc_run_bl_dgemm.sh
+        └── test_bl_dgemm.c
 
 How to compile and execute the code:
 1. Change the options in sourceme.sh and set the environment variables.
