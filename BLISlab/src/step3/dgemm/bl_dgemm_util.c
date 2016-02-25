@@ -29,11 +29,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * bl_dgemm.h
+ * bl_dgemm_util.c
  *
  *
  * Purpose:
- * this header file contains all function prototypes.
+ * Utility routines (Mem allocation, Print, etc.) that will come in handy later.
  *
  * Todo:
  *
@@ -44,66 +44,55 @@
  * */
 
 
-#ifndef BLISLAB_DGEMM_H
-#define BLISLAB_DGEMM_H
+#include <stdio.h>
+#include <stdlib.h>
+#include <omp.h>
 
-// Allow C++ users to include this header file in their source code. However,
-// we make the extern "C" conditional on whether we're using a C++ compiler,
-// since regular C compilers don't understand the extern "C" construct.
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <bl_dgemm.h>
+#include <bl_config.h>
 
-#include <math.h>
-#include <immintrin.h>
-
-#define A( i, j ) A[ (j)*lda + (i) ]
-#define B( i, j ) B[ (j)*ldb + (i) ]
-#define C( i, j ) C[ (j)*ldc + (i) ]
-#define C_ref( i, j ) C_ref[ (j)*ldc_ref + (i) ]
-
-typedef unsigned long long dim_t;
-
-struct aux_s {
-    double *b_next;
-    float  *b_next_s;
-    int    ldr;
-    char   *flag;
-    int    pc;
-    int    m;
-    int    n;
-};
-typedef struct aux_s aux_t;
-
-void bl_dgemm(
-        int    m,
-        int    n,
-        int    k,
-        double *A,
-        int    lda,
-        double *B,
-        int    ldb,
-        double *C,
-        int    ldc
-        );
-
+/*
+ *
+ *
+ */ 
 double *bl_malloc_aligned(
         int    m,
         int    n,
         int    size
-        );
+        )
+{
+    double *ptr;
+    int    err;
 
-void bl_printmatrix(
+    err = posix_memalign( (void**)&ptr, (size_t)GEMM_SIMD_ALIGN_SIZE, size * m * n );
+
+    if ( err ) {
+        printf( "bl_malloc_aligned(): posix_memalign() failures" );
+        exit( 1 );    
+    }
+
+    return ptr;
+}
+
+
+
+/*
+ *
+ *
+ */
+void bl_dgemm_printmatrix(
         double *A,
         int    lda,
         int    m,
         int    n
-        );
-
-// End extern "C" construct block.
-#ifdef __cplusplus
+        )
+{
+    int    i, j;
+    for ( i = 0; i < m; i ++ ) {
+        for ( j = 0; j < n; j ++ ) {
+            printf("%lf\t", A[j * lda + i]);
+        }
+        printf("\n");
+    }
 }
-#endif
-
-#endif
 

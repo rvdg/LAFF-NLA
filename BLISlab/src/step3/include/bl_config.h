@@ -29,11 +29,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * bl_dgemm.h
+ * bl_config.h
  *
  *
  * Purpose:
- * this header file contains all function prototypes.
+ * this header file contains configuration parameters.
  *
  * Todo:
  *
@@ -43,9 +43,8 @@
  * 
  * */
 
-
-#ifndef BLISLAB_DGEMM_H
-#define BLISLAB_DGEMM_H
+#ifndef BLISLAB_CONFIG_H
+#define BLISLAB_CONFIG_H
 
 // Allow C++ users to include this header file in their source code. However,
 // we make the extern "C" conditional on whether we're using a C++ compiler,
@@ -54,51 +53,18 @@
 extern "C" {
 #endif
 
-#include <math.h>
-#include <immintrin.h>
+#define GEMM_SIMD_ALIGN_SIZE 32
 
-#define A( i, j ) A[ (j)*lda + (i) ]
-#define B( i, j ) B[ (j)*ldb + (i) ]
-#define C( i, j ) C[ (j)*ldc + (i) ]
-#define C_ref( i, j ) C_ref[ (j)*ldc_ref + (i) ]
+#define DGEMM_MC 96
+#define DGEMM_NC 2048
+#define DGEMM_KC 256
+#define DGEMM_MR 8
+#define DGEMM_NR 4
 
-typedef unsigned long long dim_t;
 
-struct aux_s {
-    double *b_next;
-    float  *b_next_s;
-    int    ldr;
-    char   *flag;
-    int    pc;
-    int    m;
-    int    n;
-};
-typedef struct aux_s aux_t;
-
-void bl_dgemm(
-        int    m,
-        int    n,
-        int    k,
-        double *A,
-        int    lda,
-        double *B,
-        int    ldb,
-        double *C,
-        int    ldc
-        );
-
-double *bl_malloc_aligned(
-        int    m,
-        int    n,
-        int    size
-        );
-
-void bl_printmatrix(
-        double *A,
-        int    lda,
-        int    m,
-        int    n
-        );
+#define BL_MICRO_KERNEL bl_dgemm_ukr
+//#define BL_MICRO_KERNEL bl_dgemm_int_kernel
+//#define BL_MICRO_KERNEL bl_dgemm_asm_kernel
 
 // End extern "C" construct block.
 #ifdef __cplusplus

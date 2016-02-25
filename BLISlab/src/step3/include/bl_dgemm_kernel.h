@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * bl_dgemm.h
+ * bl_dgemm_kernel.h
  *
  *
  * Purpose:
@@ -44,8 +44,10 @@
  * */
 
 
-#ifndef BLISLAB_DGEMM_H
-#define BLISLAB_DGEMM_H
+#ifndef BLISLAB_DGEMM_KERNEL_H
+#define BLISLAB_DGEMM_KERNEL_H
+
+#include "bl_config.h"
 
 // Allow C++ users to include this header file in their source code. However,
 // we make the extern "C" conditional on whether we're using a C++ compiler,
@@ -54,20 +56,11 @@
 extern "C" {
 #endif
 
-#include <math.h>
-#include <immintrin.h>
-
-#define A( i, j ) A[ (j)*lda + (i) ]
-#define B( i, j ) B[ (j)*ldb + (i) ]
-#define C( i, j ) C[ (j)*ldc + (i) ]
-#define C_ref( i, j ) C_ref[ (j)*ldc_ref + (i) ]
-
 typedef unsigned long long dim_t;
 
 struct aux_s {
     double *b_next;
     float  *b_next_s;
-    int    ldr;
     char   *flag;
     int    pc;
     int    m;
@@ -75,30 +68,42 @@ struct aux_s {
 };
 typedef struct aux_s aux_t;
 
-void bl_dgemm(
-        int    m,
-        int    n,
+void bl_dgemm_ukr( int k,
+        double *a,
+        double *b,
+        double *c,
+        unsigned long long ldc,
+        aux_t* data );
+
+void bl_dgemm_int_kernel( int k,
+        double *a,
+        double *b,
+        double *c,
+        unsigned long long ldc,
+        aux_t* data );
+
+void bl_dgemm_asm_kernel( int k,
+        double *a,
+        double *b,
+        double *c,
+        unsigned long long ldc,
+        aux_t* data );
+
+static void (*bl_micro_kernel) (
         int    k,
-        double *A,
-        int    lda,
-        double *B,
-        int    ldb,
-        double *C,
-        int    ldc
-        );
+        double *a,
+        double *b,
+        double *c,
+        unsigned long long ldc,
+        aux_t  *aux
+        ) = {
+        BL_MICRO_KERNEL
+        //bl_dgemm_ukr
+        //bl_dgemm_int_kernel
+        //bl_dgemm_asm_kernel
+};
 
-double *bl_malloc_aligned(
-        int    m,
-        int    n,
-        int    size
-        );
 
-void bl_printmatrix(
-        double *A,
-        int    lda,
-        int    m,
-        int    n
-        );
 
 // End extern "C" construct block.
 #ifdef __cplusplus
