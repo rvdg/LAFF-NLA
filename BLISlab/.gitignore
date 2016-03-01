@@ -1,0 +1,15 @@
+*~
+*.o
+*.swp
+*.log
+*.aux
+*.bbl
+*.out
+*.blg
+*backup*
+*.so
+*.a
+*.x
+*.txt
+*.pyc
+.DS_Store

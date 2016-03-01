@@ -29,11 +29,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * bl_dgemm.h
+ * avx_types.h
  *
  *
  * Purpose:
- * this header file contains all function prototypes.
+ * this header file contains a union definition for AVX intrinsics (easy for debugging purpose).
  *
  * Todo:
  *
@@ -43,9 +43,8 @@
  * 
  * */
 
-
-#ifndef BLISLAB_DGEMM_H
-#define BLISLAB_DGEMM_H
+#ifndef BLISLAB_CONFIG_H
+#define BLISLAB_CONFIG_H
 
 // Allow C++ users to include this header file in their source code. However,
 // we make the extern "C" conditional on whether we're using a C++ compiler,
@@ -54,51 +53,17 @@
 extern "C" {
 #endif
 
-#include <math.h>
-#include <immintrin.h>
+typedef union {
+    __m256d v;
+    __m256i u;
+    double d[ 4 ];
+} v4df_t;
 
-#define A( i, j ) A[ (j)*lda + (i) ]
-#define B( i, j ) B[ (j)*ldb + (i) ]
-#define C( i, j ) C[ (j)*ldc + (i) ]
-#define C_ref( i, j ) C_ref[ (j)*ldc_ref + (i) ]
 
-typedef unsigned long long dim_t;
-
-struct aux_s {
-    double *b_next;
-    float  *b_next_s;
-    int    ldr;
-    char   *flag;
-    int    pc;
-    int    m;
-    int    n;
-};
-typedef struct aux_s aux_t;
-
-void bl_dgemm(
-        int    m,
-        int    n,
-        int    k,
-        double *A,
-        int    lda,
-        double *B,
-        int    ldb,
-        double *C,
-        int    ldc
-        );
-
-double *bl_malloc_aligned(
-        int    m,
-        int    n,
-        int    size
-        );
-
-void bl_printmatrix(
-        double *A,
-        int    lda,
-        int    m,
-        int    n
-        );
+typedef union {
+    __m128i v;
+    int d[ 4 ];
+} v4li_t;
 
 // End extern "C" construct block.
 #ifdef __cplusplus

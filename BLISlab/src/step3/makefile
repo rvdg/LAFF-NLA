@@ -15,8 +15,13 @@ FRAME_CC_SRC=  \
 FRAME_CPP_SRC= \
 
 KERNEL_SRC=    \
+							 kernels/bl_dgemm_int_kernel.c \
+			                 kernels/bl_dgemm_asm_kernel.c \
+							 kernels/bl_dgemm_ukr.c \
 
 OTHER_DEP = \
+			                 include/bl_dgemm.h \
+			                 include/bl_dgemm_kernel.h \
 
 BLISLAB_OBJ=$(FRAME_CC_SRC:.c=.o) $(FRAME_CPP_SRC:.cpp=.o) $(KERNEL_SRC:.c=.o) $(FRAME_CC_SRC_S:.c=.os) $(KERNEL_SRC_S:.c=.os)
 
@@ -43,6 +48,6 @@ $(SHAREDLIBBLISLAB): $(BLISLAB_OBJ)
 # ---------------------------------------------------------------------------
 
 clean:
-	-rm $(BLISLAB_OBJ) $(LIBBLISLAB) $(SHAREDLIBBLISLAB) dgemm/*~ test/*~ include/*~ *~ make.inc.files/*~
+	-rm $(BLISLAB_OBJ) $(LIBBLISLAB) $(SHAREDLIBBLISLAB) dgemm/*~ kernels/*~ kernels/*.o test/*~ include/*~ *~ make.inc.files/*~
 	$(MAKE) clean -C test
 

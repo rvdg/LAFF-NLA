@@ -29,11 +29,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * bl_dgemm_kernel.h
+ * bl_dgemm_ref.c
  *
  *
  * Purpose:
- * this header file contains all function prototypes.
+ * implement reference mkl using GEMM (optional) in C.
  *
  * Todo:
  *
@@ -44,55 +44,63 @@
  * */
 
 
-#ifndef BLISLAB_DGEMM_KERNEL_H
-#define BLISLAB_DGEMM_KERNEL_H
+#include <omp.h>
+#include <stdlib.h>
+#include <limits.h>
+#include <float.h>
 
-#include "bl_config.h"
+#include <bl_dgemm.h>
+#include <bl_dgemm_ref.h>
 
-// Allow C++ users to include this header file in their source code. However,
-// we make the extern "C" conditional on whether we're using a C++ compiler,
-// since regular C compilers don't understand the extern "C" construct.
-#ifdef __cplusplus
-extern "C" {
+#ifdef USE_BLAS
+/* 
+ * dgemm prototype
+ *
+ */ 
+//void dgemm(char*, char*, int*, int*, int*, double*, double*, 
+//        int*, double*, int*, double*, double*, int*);
+extern void dgemm_(char*, char*, int*, int*, int*, double*, double*, 
+        int*, double*, int*, double*, double*, int*);
 #endif
 
-typedef unsigned long long dim_t;
-
-struct aux_s {
-    double *b_next;
-    float  *b_next_s;
-    char   *flag;
-    int    pc;
-    int    m;
-    int    n;
-};
-typedef struct aux_s aux_t;
-
-void bl_dgemm_ukr_ref( int k,
-        double *a,
-        double *b,
-        double *c,
-        unsigned long long ldc,
-        aux_t* data );
-
-static void (*bl_micro_kernel) (
+void bl_dgemm_ref(
+        int    m,
+        int    n,
         int    k,
-        double *a,
-        double *b,
-        double *c,
-        unsigned long long ldc,
-        aux_t  *aux
-        ) = {
-        BL_MICRO_KERNEL
-        //bl_dgemm_ukr_ref
-};
+        double *XA,
+        int    lda,
+        double *XB,
+        int    ldb,
+        double *XC,
+        int    ldc
+        )
+{
+    // Local variables.
+    int    i, j, p;
+    double beg, time_collect, time_dgemm, time_square;
+    double alpha = 1.0, beta = 1.0;
 
+    // Sanity check for early return.
+    if ( m == 0 || n == 0 || k == 0 ) return;
 
+    // Reference GEMM implementation.
+    beg = omp_get_wtime();
 
-// End extern "C" construct block.
-#ifdef __cplusplus
+#ifdef USE_BLAS
+    dgemm_( "N", "N", &m, &n, &k, &alpha,
+            XA, &lda, XB, &ldb, &beta, XC, &ldc );
+#else
+    #pragma omp parallel for private( i, p )
+    for ( j = 0; j < n; j ++ ) {
+        for ( i = 0; i < m; i ++ ) {
+            for ( p = 0; p < k; p ++ ) {
+                XC[ j * ldc + i ] += XA[ p * lda + i ] * XB[ j * ldb + p ];
+            }
+        }
+    }
+#endif
+
+    time_dgemm = omp_get_wtime() - beg;
+
 }
-#endif
-
-#endif
 
