@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export DYLD_LIBRARY_PATH=/opt/intel/lib:/opt/intel/mkl/lib
+
 #Single Thread
 export KMP_AFFINITY=compact  #Rule to bind core to thread for OMP thread with Intel compiler for parallel version
 export OMP_NUM_THREADS=1     #Set OMP number of threads for parallel version
